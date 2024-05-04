@@ -1,8 +1,19 @@
 import matplotlib.pyplot as plt
 
 class PostProcessing:
+    """後処理クラス
+    """
     
     def get_result_city_id(self, data, sample):
+        """アニーリングで採用された地点IDを取得
+
+        Args:
+            data (tsplib_data.TSP): TSPデータ
+            sample (dimod.sampleset.SampleSet): アニーリング結果
+
+        Returns:
+            list: アニーリングで採用された地点ID
+        """
         # アニーリングで採用された地点IDを取得
         id_sequence = []
         dimension = data.dimension
@@ -18,6 +29,13 @@ class PostProcessing:
         return id_sequence
 
     def plot_route(self, data, id_sequence):
+        """可視化処理
+
+        Args:
+            data (tsplib_data.TSP): TSPデータ
+            id_sequence (list): アニーリングで採用された地点ID
+        """
+        
         coordinate = data.coordinate
         plt.figure(figsize=(10, 8))
         
