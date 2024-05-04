@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.model &mdash; tsp-sample 1.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=292eb321"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            tsp-sample
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">src.model</a><ul>
+<li><a class="reference internal" href="#src.model.TspModel"><code class="docutils literal notranslate"><span class="pre">TspModel</span></code></a><ul>
+<li><a class="reference internal" href="#src.model.TspModel.annealing"><code class="docutils literal notranslate"><span class="pre">TspModel.annealing()</span></code></a></li>
+<li><a class="reference internal" href="#src.model.TspModel.check"><code class="docutils literal notranslate"><span class="pre">TspModel.check()</span></code></a></li>
+<li><a class="reference internal" href="#src.model.TspModel.define_spin"><code class="docutils literal notranslate"><span class="pre">TspModel.define_spin()</span></code></a></li>
+<li><a class="reference internal" href="#src.model.TspModel.get_feed"><code class="docutils literal notranslate"><span class="pre">TspModel.get_feed()</span></code></a></li>
+<li><a class="reference internal" href="#src.model.TspModel.get_model"><code class="docutils literal notranslate"><span class="pre">TspModel.get_model()</span></code></a></li>
+<li><a class="reference internal" href="#src.model.TspModel.to_qubo"><code class="docutils literal notranslate"><span class="pre">TspModel.to_qubo()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">tsp-sample</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">src.model</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-src.model">
+<span id="src-model"></span><h1>src.model<a class="headerlink" href="#module-src.model" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.model.TspModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.model.</span></span><span class="sig-name descname"><span class="pre">TspModel</span></span><a class="headerlink" href="#src.model.TspModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>TSPのモデル・定式化生成クラス</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.model.TspModel.annealing">
+<span class="sig-name descname"><span class="pre">annealing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sampler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'neal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qubo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_reads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_sweeps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.model.TspModel.annealing" title="Link to this definition"></a></dt>
+<dd><p>アニーリング関数</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sampler</strong> (<em>str</em>) – ソルバー指定 neal=neal. oj=openJij. Defaults to “neal”.</p></li>
+<li><p><strong>qubo</strong> (<em>dict</em>) – quboデータ. Defaults to None.</p></li>
+<li><p><strong>num_reads</strong> (<em>int</em>) – 試行回数. Defaults to 1.</p></li>
+<li><p><strong>num_sweeps</strong> (<em>int</em>) – アニーリングステップ数. Defaults to 1000.</p></li>
+<li><p><strong>beta_min</strong> (<em>float</em>) – ベータ最小値. Defaults to 0.1.</p></li>
+<li><p><strong>beta_max</strong> (<em>float</em>) – ベータ最大値. Defaults to 1000.0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – 使用不可のソルバー名を指定した場合の例外</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>アニーリング結果</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dimod.sampleset.SampleSet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.model.TspModel.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampleset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feed_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.model.TspModel.check" title="Link to this definition"></a></dt>
+<dd><p>制約充足チェック</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>_cpp_pyqubo.Model</em>) – コンパイル済のモデル</p></li>
+<li><p><strong>sampleset</strong> (<em>dimod.sampleset.SampleSet</em>) – アニーリング結果</p></li>
+<li><p><strong>feed_dict</strong> (<em>dict</em>) – 項ごとの係数</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>制約充足チェック結果</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.model.TspModel.define_spin">
+<span class="sig-name descname"><span class="pre">define_spin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.model.TspModel.define_spin" title="Link to this definition"></a></dt>
+<dd><p>スピンを定義</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<a class="reference internal" href="tsplib_data.html#src.tsplib_data.TSP" title="src.tsplib_data.TSP"><em>tsplib_data.TSP</em></a>) – TSPデータ</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>スピン変数</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array.create</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.model.TspModel.get_feed">
+<span class="sig-name descname"><span class="pre">get_feed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.model.TspModel.get_feed" title="Link to this definition"></a></dt>
+<dd><p>重み係数を取得</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s1</strong> (<em>float</em>) – s1の係数. Defaults to 1.0.</p></li>
+<li><p><strong>p1</strong> (<em>float</em>) – p1の係数. Defaults to 1.0.</p></li>
+<li><p><strong>p2</strong> (<em>float</em>) – p2の係数. Defaults to 1.0.</p></li>
+<li><p><strong>p3</strong> (<em>float</em>) – p3の係数. Defaults to 1.0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>項ごとの係数</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.model.TspModel.get_model">
+<span class="sig-name descname"><span class="pre">get_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.model.TspModel.get_model" title="Link to this definition"></a></dt>
+<dd><p>モデルを作成</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference internal" href="tsplib_data.html#src.tsplib_data.TSP" title="src.tsplib_data.TSP"><em>tsplib_data.TSP</em></a>) – TSPデータ</p></li>
+<li><p><strong>dist_matrix</strong> (<em>list</em>) – 2地点間の距離マトリクス</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>コンパイル済のモデル</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>_cpp_pyqubo.Model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.model.TspModel.to_qubo">
+<span class="sig-name descname"><span class="pre">to_qubo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feed_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.model.TspModel.to_qubo" title="Link to this definition"></a></dt>
+<dd><p>qubo, offsetを取得</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>_cpp_pyqubo.Model</em>) – コンパイル済のモデル</p></li>
+<li><p><strong>feed_dict</strong> (<em>dict</em>) – 項ごとの係数</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>quboデータ
+float: オフセット値</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, s-muramoto.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.tsplib_data &mdash; tsp-sample 1.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=292eb321"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            tsp-sample
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">src.tsplib_data</a><ul>
+<li><a class="reference internal" href="#src.tsplib_data.TSP"><code class="docutils literal notranslate"><span class="pre">TSP</span></code></a><ul>
+<li><a class="reference internal" href="#src.tsplib_data.TSP.coordinate"><code class="docutils literal notranslate"><span class="pre">TSP.coordinate</span></code></a></li>
+<li><a class="reference internal" href="#src.tsplib_data.TSP.dimension"><code class="docutils literal notranslate"><span class="pre">TSP.dimension</span></code></a></li>
+<li><a class="reference internal" href="#src.tsplib_data.TSP.edge_weight_type"><code class="docutils literal notranslate"><span class="pre">TSP.edge_weight_type</span></code></a></li>
+<li><a class="reference internal" href="#src.tsplib_data.TSP.file_name"><code class="docutils literal notranslate"><span class="pre">TSP.file_name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#src.tsplib_data.load_data"><code class="docutils literal notranslate"><span class="pre">load_data()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">tsp-sample</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">src.tsplib_data</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-src.tsplib_data">
+<span id="src-tsplib-data"></span><h1>src.tsplib_data<a class="headerlink" href="#module-src.tsplib_data" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.tsplib_data.TSP">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.tsplib_data.</span></span><span class="sig-name descname"><span class="pre">TSP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_weight_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.tsplib_data.TSP" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>TSPデータクラス</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.tsplib_data.TSP.coordinate">
+<span class="sig-name descname"><span class="pre">coordinate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#src.tsplib_data.TSP.coordinate" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.tsplib_data.TSP.dimension">
+<span class="sig-name descname"><span class="pre">dimension</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#src.tsplib_data.TSP.dimension" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.tsplib_data.TSP.edge_weight_type">
+<span class="sig-name descname"><span class="pre">edge_weight_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.tsplib_data.TSP.edge_weight_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.tsplib_data.TSP.file_name">
+<span class="sig-name descname"><span class="pre">file_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#src.tsplib_data.TSP.file_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.tsplib_data.load_data">
+<span class="sig-prename descclassname"><span class="pre">src.tsplib_data.</span></span><span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'eil51.tsp'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.tsplib_data.load_data" title="Link to this definition"></a></dt>
+<dd><p>入力データ読み込み関数</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dir</strong> (<em>str</em>) – 入力データ格納フォルダ名. Defaults to DATA_DIR.</p></li>
+<li><p><strong>file_name</strong> (<em>str</em>) – 入力データ名. Defaults to ‘eil51.tsp’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>入力データ格納済のTSPデータ</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#src.tsplib_data.TSP" title="src.tsplib_data.TSP">TSP</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">load_data</span><span class="p">())</span>
+<span class="go">TSP(file_name=&#39;eil51&#39;, edge_weight_type=&#39;EUC_2D&#39;, dimension=51, coordinate={1: [37, 52], 2: [49, 49], 3: [52, 64], 4: [20, 26],</span>
+<span class="go">5: [40, 30], 6: [21, 47], 7: [17, 63], 8: [31, 62], 9: [52, 33], 10: [51, 21], 11: [42, 41], 12: [31, 32], 13: [5, 25], 14: [12, 42], 15: [36, 16],</span>
+<span class="go">16: [52, 41], 17: [27, 23], 18: [17, 33], 19: [13, 13], 20: [57, 58], 21: [62, 42], 22: [42, 57], 23: [16, 57], 24: [8, 52], 25: [7, 38], 26: [27, 68],</span>
+<span class="go">27: [30, 48], 28: [43, 67], 29: [58, 48], 30: [58, 27], 31: [37, 69], 32: [38, 46], 33: [46, 10], 34: [61, 33], 35: [62, 63], 36: [63, 69], 37: [32, 22],</span>
+<span class="go">38: [45, 35], 39: [59, 15], 40: [5, 6], 41: [10, 17], 42: [21, 10], 43: [5, 64], 44: [30, 15], 45: [39, 10], 46: [32, 39], 47: [25, 32], 48: [25, 55],</span>
+<span class="go">49: [48, 28], 50: [56, 37], 51: [30, 40]})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, s-muramoto.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
