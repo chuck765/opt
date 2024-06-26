@@ -1,4 +1,5 @@
 import urllib
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -6,7 +7,7 @@ import requests
 
 from model import AreaModel
 
-
+warnings.simplefilter('ignore')
 DATA_DIR = './data'
 
 def load_data(input_file_name):
@@ -49,7 +50,7 @@ def get_coordinates(office_address_name):
     
     return coordinate
 
-def get_dist_matrix(data_list):
+def get_dist_matrix(data_list, dist_type=0):
     
     dist_matrix = {}
     for i in range(len(data_list)):
@@ -61,8 +62,12 @@ def get_dist_matrix(data_list):
             
             from_coordinate = np.array(data_list[i].coordinate)
             to_coordinate = np.array(data_list[j].coordinate)
-            
-            # ２次元空間のユークリッド距離
-            dist_matrix[(from_area_id, to_area_id)] = np.linalg.norm(from_coordinate - to_coordinate)
+
+            if dist_type == 0:
+                # enclidean distance
+                dist_matrix[(from_area_id, to_area_id)] = np.linalg.norm(from_coordinate - to_coordinate)
+            else:
+                # manhattan distance
+                dist_matrix[(from_area_id, to_area_id)] = np.linalg.norm(from_coordinate - to_coordinate, ord=1)
         
     return dist_matrix

@@ -1,6 +1,10 @@
 import plotly.graph_objects as go
 
-def visualize(x_coords, y_coords):
+def visualize(office_address_exist_list):
+
+    x_coords = [row.coordinate[0] for row in office_address_exist_list]
+    y_coords = [row.coordinate[1] for row in office_address_exist_list]
+
     # 散布図の作成
     fig = go.Figure(data=go.Scatter(
         x=x_coords,
