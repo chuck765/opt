@@ -313,6 +313,9 @@ test_time_table = [
 from collections import defaultdict
 import pandas as pd
 
+DRIVE_INTERRUPT_TIME = 0.5
+CONTINUTE_DRIVE_TIME_LIMIT = 4.0
+
 # NOTE: 各車両の1日のコンプライアンス時間を集計したものを1レコードとする
 @dataclass
 class Record:
@@ -337,16 +340,16 @@ class CompliancePlan:
         """コンストラクタ
 
         Args:
-            time_table (List[TimeTable]): _description_
+            time_table (List[TimeTable]): 生成したタイムテーブル
         """
         self.record = []
         self.time_table = time_table
     
-    def _group_time_table(self):
-        """タイムテーブルをグルーピングする。
+    def _group_time_table(self) -> Dict[Tuple, List[TimeTable]]:
+        """集計用にタイムテーブルをグルーピングする。
 
         Returns:
-            _type_: _description_
+            Dict[Tuple, List[TimeTable]]: グルーピングしたタイムテーブル
         """
         # NOTE: 同じ車両ID and 同じ開始日で分ける
         group_time_tables = defaultdict(list)
@@ -355,36 +358,45 @@ class CompliancePlan:
             group_time_tables[key].append(tt)
         return group_time_tables
 
-    def _add_record(self, group_time_tables:Dict[Tuple, List[TimeTable]]):
-        """コンプライアンス時間を集計する
+    def _add_record(self, group_time_tables:Dict[Tuple, List[TimeTable]]) -> List[Record]:
+        """コンプライアンス時間を集計したレコードを取得
 
         Args:
             group_time_tables (List[List[TimeTable]]): _description_
 
-        Raises:
-            NotImplementedError: _description_
+        Returns:
+            List[Record]: コンプライアンス時間を集計したレコード
         """
         
         record = []
         
         # NOTE: 車両IDと日付ごとにレコード生成する方針
-        for key in group_time_tables.keys():
+        for vehicle_id, start_date in group_time_tables.keys():
+            
+            # 初期化
             tmp_bind_time = 0.0
             tmp_drive_time = 0.0
             tmp_break_time = 0.0
             tmp_work_time = 0.0
             tmp_over_time = 0.0
+            tmp_rest_time = 0.0
             tmp_drive_interrupt_time = 0.0
             
-            # 作業開始・終了時刻
-            start_time = group_time_tables[key][0].start_time
-            end_time = group_time_tables[key][-1].end_time
-            for tt in group_time_tables[key]:
-                
-                # 車両IDと集計日
-                vehicle_id = key[0]
-                date = key[1]
-                
+            # 当日の作業開始・終了時刻
+            current_start_time = group_time_tables[(vehicle_id, start_date)][0].start_time
+            current_end_time = group_time_tables[(vehicle_id, start_date)][-1].end_time
+
+            # 翌日の作業開始時刻
+            next_key = (vehicle_id, start_date+timedelta(days=1))
+            next_start_time = None
+            if next_key in group_time_tables:
+                next_start_time = group_time_tables[next_key][0].start_time
+            
+                # 休息時間
+                tmp_rest_time = (next_start_time - current_end_time).seconds / 3600
+                        
+            for tt in group_time_tables[(vehicle_id, start_date)]:
+        
                 # 運転時間
                 if tt.category == '移動':
                     tmp_drive_time += tt.elapsed_time
@@ -396,31 +408,32 @@ class CompliancePlan:
                     tmp_work_time += tt.elapsed_time
                 # 連続運転中断時間
                 if tt.category == '移動':
-                    if tt.elapsed_time > 4.0:
-                        tmp_drive_interrupt_time += int(tt.elapsed_time / 4.0)*0.5
+                    if tt.elapsed_time > CONTINUTE_DRIVE_TIME_LIMIT:
+                        tmp_drive_interrupt_time += int(tt.elapsed_time / CONTINUTE_DRIVE_TIME_LIMIT)*DRIVE_INTERRUPT_TIME
             
             # TODO:残業時間(労働時間=8h以下なら残業=0h)
-            end_start_diff_time = (end_time - start_time).total_seconds() / 3600
-            if end_start_diff_time < 8.0:
+            current_end_start_diff_time = (current_end_time - current_start_time).total_seconds() / 3600
+            if current_end_start_diff_time < 8.0:
                 tmp_over_time = 0.0
             else:
-                tmp_over_time = end_start_diff_time - tmp_work_time
+                tmp_over_time = current_end_start_diff_time - tmp_work_time
             
             # TODO:拘束時間
-            tmp_bind_time = end_start_diff_time
+            tmp_bind_time = current_end_start_diff_time
             
             # レコード生成・登録
             record.append(
                 Record(
                     vehicle_id=vehicle_id,
-                    date=date,
-                    start_time=start_time,
-                    end_time=end_time,
+                    date=start_date,
+                    start_time=current_start_time,
+                    end_time=current_end_time,
                     bind_time=tmp_bind_time,
                     work_time=tmp_work_time,
                     drive_time=tmp_drive_time,
                     break_time=tmp_break_time,
                     over_time=tmp_over_time,
+                    rest_time=tmp_rest_time,
                     drive_interupt_time=tmp_drive_interrupt_time
                 )
             )
