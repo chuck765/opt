@@ -9,8 +9,8 @@ from typing import List, Dict, Tuple
 
 @dataclass
 class TimeTable:
-    vehicle_id: int = None         # 車両(ヘッド・ローリー)ID
-    chassis_id: int = None         # シャーシID
+    vehicle_id: int = None         # 車両ID
+    chassis_id: int = None         # chassisID
     category : str = None          # 作業状況
     start_time : datetime = None   # 開始時刻
     end_time : datetime = None     # 終了時刻
@@ -309,18 +309,18 @@ test_time_table = [
         chassis_id=101,
         category=category["move"],
         start_time=datetime(2025, 2, 1, 8, 30),
-        end_time=datetime(2025, 2, 1, 8, 30)+timedelta(hours=14.0),
+        end_time=datetime(2025, 2, 1, 8, 30)+timedelta(hours=10.0),
         start_area="area1",
         end_area="area2",
-        elapsed_time=14.0,
+        elapsed_time=10.0,
         order_id=100,
     ),
     TimeTable(
         vehicle_id=100,
         chassis_id=101,
         category=category["move"],
-        start_time=datetime(2025, 2, 3, 8, 30),
-        end_time=datetime(2025, 2, 3, 8, 30)+timedelta(hours=14.0),
+        start_time=datetime(2025, 2, 2, 6, 30),
+        end_time=datetime(2025, 2, 2, 6, 30)+timedelta(hours=14.0),
         start_area="area1",
         end_area="area2",
         elapsed_time=14.0,
@@ -335,13 +335,15 @@ test_time_table = [
 from collections import defaultdict
 import pandas as pd
 
-DRIVE_INTERRUPT_TIME = 0.5
-CONTINUTE_DRIVE_TIME_LIMIT = 4.0
+DRIVE_INTERRUPT_TIME = 0.5          # 連続運転後の中断時間
+CONTINUTE_DRIVE_TIME_LIMIT = 4.0    # 最大連続運転時間
+FIXED_WORK_TIME = 8.0               # 所定労働時間
+
 
 # NOTE: 各車両の1日のコンプライアンス時間を集計したものを1レコードとする
 @dataclass
 class Record:
-    vehicle_id : int = None             # 車両（ヘッド・ローリー）ID
+    vehicle_id : int = None             # 車両ID
     date: datetime = None               # 集計日
     start_time : datetime = None        # 作業開始時刻
     end_time : datetime = None          # 作業終了時刻
@@ -353,6 +355,8 @@ class Record:
     rest_time: float = 0.0              # 休息時間 (unit:h)
     drive_interupt_time: float = 0.0    # 連続運転中断時間 (unit:h)
 
+
+# NOTE: https://www.mhlw.go.jp/content/001035021.pdf
 @dataclass
 class CompliancePlan:
     _record: List[Record] = None         # レコード
@@ -373,7 +377,7 @@ class CompliancePlan:
         Returns:
             Dict[Tuple, List[TimeTable]]: グルーピングしたタイムテーブル
         """
-        # NOTE: 同じ車両ID and 同じ開始日で分ける
+        # NOTE: 日別で集計するため、同じ車両ID and 同じ開始日で分ける
         group_time_tables = defaultdict(list)
         for tt in self.time_table:
             key = (tt.vehicle_id, tt.start_time.date())
@@ -393,6 +397,106 @@ class CompliancePlan:
             return True
         return False
 
+    def _calc_current_start_time(self, group_time_tables:Dict[Tuple, List[TimeTable]], 
+                                 vehicle_id:int, totaling_date: datetime) -> datetime:
+        """当日の作業開始時刻を計算
+
+        Args:
+            group_time_tables (Dict[Tuple, List[TimeTable]]): タイムテーブル
+            vehicle_id (int): 車両ID
+            totaling_date (datetime): 集計日
+
+        Returns:
+            datetime: 当日の作業開始時刻
+        """
+        return group_time_tables[(vehicle_id, totaling_date)][0].start_time
+
+    def _calc_current_end_time(self, group_time_tables:Dict[Tuple, List[TimeTable]], 
+                                 vehicle_id:int, totaling_date: datetime) -> datetime:
+        """当日の作業終了時刻を計算
+
+        Args:
+            group_time_tables (Dict[Tuple, List[TimeTable]]): タイムテーブル
+            vehicle_id (int): 車両ID
+            totaling_date (datetime): 集計日
+
+        Returns:
+            datetime: 当日の作業終了時刻
+        """
+        return group_time_tables[(vehicle_id, totaling_date)][-1].end_time
+
+    def _calc_next_start_time(self, group_time_tables:Dict[Tuple, List[TimeTable]], 
+                                 vehicle_id:int, totaling_date: datetime) -> datetime:
+        """翌日の作業開始時刻を計算(ある場合)
+
+        Args:
+            group_time_tables (Dict[Tuple, List[TimeTable]]): タイムテーブル
+            vehicle_id (int): 車両ID
+            totaling_date (datetime): 集計日
+
+        Returns:
+            datetime: 翌日の作業開始時刻
+        """
+
+        next_key = (vehicle_id, totaling_date+timedelta(days=1)) # 翌日のキー
+        if self._is_next_time(group_time_tables=group_time_tables, next_key=next_key):
+            return group_time_tables[next_key][0].start_time
+        return None
+
+    def _calc_current_extra_bind_time(self, group_time_tables:Dict[Tuple, List[TimeTable]], 
+                                 vehicle_id:int, totaling_date: datetime, 
+                                 current_start_time:datetime,next_start_time:datetime) -> float:
+        """当日の拘束時間を計算する際に、翌日の作業開始時刻との差分を考慮した時間
+
+        Args:
+            group_time_tables (Dict[Tuple, List[TimeTable]]): タイムテーブル
+            vehicle_id (int): 車両ID
+            totaling_date (datetime): 集計日
+            current_start_time (datetime): 作業開始時刻
+            next_start_time (datetime) : 翌日の作業開始時刻
+
+        Returns:
+            float: 翌日分も考慮した拘束時間
+        """
+        next_key = (vehicle_id, totaling_date+timedelta(days=1)) # 翌日のキー
+        if self._is_next_time(group_time_tables=group_time_tables, next_key=next_key):
+            return current_start_time.hour - next_start_time.hour
+        return 0.0
+    
+    def _calc_rest_time(self, group_time_tables:Dict[Tuple, List[TimeTable]], 
+                                 vehicle_id:int, totaling_date: datetime, 
+                                 current_end_time:datetime,next_start_time:datetime) -> float:
+        """休息時間を計算
+
+        Args:
+            group_time_tables (Dict[Tuple, List[TimeTable]]): タイムテーブル
+            vehicle_id (int): 車両ID
+            totaling_date (datetime): 集計日
+            current_end_time (datetime): 作業終了時刻
+            next_start_time (datetime) : 翌日の作業開始時刻
+
+        Returns:
+            float: 休息時間
+        """
+        next_key = (vehicle_id, totaling_date+timedelta(days=1)) # 翌日のキー
+        if self._is_next_time(group_time_tables=group_time_tables, next_key=next_key):
+            return (next_start_time - current_end_time).seconds / 3600
+        return 0.0
+    
+    def _calc_over_time(self, current_bind_time: datetime, work_time: float) -> float:
+        """残業時間を計算
+
+        Args:
+            current_bind_time (datetime): 当日の拘束時間
+            work_time (float): 労働時間
+
+        Returns:
+            float: 残業時間
+        """
+        if current_bind_time > FIXED_WORK_TIME:
+            return current_bind_time - work_time
+        return 0.0
+
     def _add_record(self, group_time_tables:Dict[Tuple, List[TimeTable]]) -> List[Record]:
         """コンプライアンス時間を集計したレコードを取得
 
@@ -403,75 +507,67 @@ class CompliancePlan:
             List[Record]: コンプライアンス時間を集計したレコード
         """
         
-        for vehicle_id, start_date in group_time_tables.keys():
-            
-            # 初期化
-            tmp_bind_time = 0.0
-            tmp_drive_time = 0.0
-            tmp_break_time = 0.0
-            tmp_work_time = 0.0
-            tmp_over_time = 0.0
-            tmp_rest_time = 0.0
-            tmp_drive_interrupt_time = 0.0
-            next_start_time = None
-            
+        for vehicle_id, totaling_date in group_time_tables.keys():
+                        
             # 当日の作業開始・終了時刻
-            current_start_time = group_time_tables[(vehicle_id, start_date)][0].start_time
-            current_end_time = group_time_tables[(vehicle_id, start_date)][-1].end_time
+            current_start_time = self._calc_current_start_time(group_time_tables,vehicle_id,totaling_date)
+            current_end_time = self._calc_current_end_time(group_time_tables,vehicle_id,totaling_date)
 
             # 翌日の作業開始時刻
-            next_key = (vehicle_id, start_date+timedelta(days=1))
-            if self._is_next_time(group_time_tables=group_time_tables, next_key=next_key):
-                next_start_time = group_time_tables[next_key][0].start_time
+            next_start_time = self._calc_next_start_time(group_time_tables,vehicle_id,totaling_date)
             
-                # 休息時間（翌日の作業開始 - 当日の作業終了）
-                tmp_rest_time = (next_start_time - current_end_time).seconds / 3600
-                        
-            for tt in group_time_tables[(vehicle_id, start_date)]:
+            # 休息時間
+            current_rest_time = self._calc_rest_time(group_time_tables,vehicle_id,totaling_date,
+                                                 current_end_time, next_start_time)
+
+            # 初期化
+            current_bind_time = 0.0
+            current_drive_time = 0.0
+            current_break_time = 0.0
+            current_work_time = 0.0
+            current_drive_interrupt_time = 0.0                  
+            for tt in group_time_tables[(vehicle_id, totaling_date)]:
         
                 # 運転時間
                 if tt.category == '移動':
-                    tmp_drive_time += tt.elapsed_time
+                    current_drive_time += tt.elapsed_time
                 # 休憩時間
                 if tt.category == '積待機' or tt.category == '卸待機':
-                    tmp_break_time += tt.elapsed_time
+                    current_break_time += tt.elapsed_time
                 # 労働時間(休憩以外)
                 if tt.category != '積待機' and tt.category != '卸待機':
-                    tmp_work_time += tt.elapsed_time
+                    current_work_time += tt.elapsed_time
                 # 連続運転中断時間
-                if tt.category == '移動':
-                    if tt.elapsed_time > CONTINUTE_DRIVE_TIME_LIMIT:
-                        # 中断回数 = int(所要時間 / 最大連続運転時間) [回]
-                        interrupt_count = int(tt.elapsed_time / CONTINUTE_DRIVE_TIME_LIMIT)
-                        tmp_drive_interrupt_time += interrupt_count*DRIVE_INTERRUPT_TIME
+                if tt.category == '移動' and tt.elapsed_time > CONTINUTE_DRIVE_TIME_LIMIT:
+                    # 中断回数 = int(所要時間 / 最大連続運転時間) [回]
+                    interrupt_count = int(tt.elapsed_time / CONTINUTE_DRIVE_TIME_LIMIT)
+                    current_drive_interrupt_time += interrupt_count*DRIVE_INTERRUPT_TIME
             
-            # TODO:残業時間
-            current_end_start_diff_time = (current_end_time - current_start_time).total_seconds() / 3600
-            
-            # 拘束時間が上限未満なら残業0h
-            if current_end_start_diff_time < 8.0:
-                tmp_over_time = 0.0
-            # 上限超えの場合は、労働時間との差分が残業時間
-            else:
-                tmp_over_time = current_end_start_diff_time - tmp_work_time
-            
-            # TODO:拘束時間
-            tmp_bind_time = current_end_start_diff_time
-            
+            # 拘束時間
+            # NOTE: 始業から起算した24時間内の拘束時間
+            current_bind_time = (current_end_time - current_start_time).total_seconds() / 3600
+            current_extra_bind_time = self._calc_current_extra_bind_time(group_time_tables,vehicle_id,totaling_date,
+                                                                         current_start_time, next_start_time)
+            current_total_bind_time = current_bind_time + current_extra_bind_time
+
+            # 残業時間
+            # NOTE: 拘束時間から法定労働時間を差し引いた時間
+            current_over_time = self._calc_over_time(current_bind_time, current_work_time)
+                
             # レコード生成・登録
             self._record.append(
                 Record(
                     vehicle_id=vehicle_id,
-                    date=start_date,
+                    date=totaling_date,
                     start_time=current_start_time,
                     end_time=current_end_time,
-                    bind_time=tmp_bind_time,
-                    work_time=tmp_work_time,
-                    drive_time=tmp_drive_time,
-                    break_time=tmp_break_time,
-                    over_time=tmp_over_time,
-                    rest_time=tmp_rest_time,
-                    drive_interupt_time=tmp_drive_interrupt_time
+                    bind_time=current_total_bind_time,
+                    work_time=current_work_time,
+                    drive_time=current_drive_time,
+                    break_time=current_break_time,
+                    over_time=current_over_time,
+                    rest_time=current_rest_time,
+                    drive_interupt_time=current_drive_interrupt_time,
                 )
             )
 
@@ -501,7 +597,7 @@ class CompliancePlan:
         print(compliance_df)
         
         # html出力
-        compliance_df.to_html("compliance.html", index=False)
+        compliance_df.to_html("compliance.html", index=True)
     
     def exe(self):
         """実行処理
