@@ -18,6 +18,7 @@ class TimeTable:
     end_area : str = None          # 終了位置
     elapsed_time : float = 0.0     # 所要時間
     order_id: int = None           # 割り当てたオーダーID
+    is_load: bool = None           # 荷物を積載中かどうか
 
 
 # ################################################################
@@ -47,6 +48,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=MOVE_TIME,
         order_id=0,
+        is_load=False,
     ),
     TimeTable(
         vehicle_id=0,
@@ -58,6 +60,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=WAIT_TIME,
         order_id=0,
+        is_load=False,
     ),
     TimeTable(
         vehicle_id=0,
@@ -69,6 +72,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=LOAD_TIME,
         order_id=0,
+        is_load=False,
     ),
     TimeTable(
         vehicle_id=0,
@@ -80,6 +84,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=MOVE_TIME,
         order_id=0,
+        is_load=True,
     ),
     TimeTable(
         vehicle_id=0,
@@ -91,6 +96,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=WAIT_TIME,
         order_id=0,
+        is_load=True,
     ),
     TimeTable(
         vehicle_id=0,
@@ -102,6 +108,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=UNLOAD_TIME,
         order_id=0,
+        is_load=True,
     ),
 
     TimeTable(
@@ -114,6 +121,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=MOVE_TIME,
         order_id=1,
+        is_load=False,
     ),
     TimeTable(
         vehicle_id=0,
@@ -125,6 +133,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=WAIT_TIME,
         order_id=1,
+        is_load=False,
     ),
     TimeTable(
         vehicle_id=0,
@@ -136,6 +145,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=LOAD_TIME,
         order_id=1,
+        is_load=False,
     ),
     TimeTable(
         vehicle_id=0,
@@ -147,6 +157,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=MOVE_TIME,
         order_id=1,
+        is_load=True,
     ),
     TimeTable(
         vehicle_id=0,
@@ -158,6 +169,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=WAIT_TIME,
         order_id=1,
+        is_load=True,
     ),
     TimeTable(
         vehicle_id=0,
@@ -169,6 +181,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=UNLOAD_TIME,
         order_id=1,
+        is_load=True,
     ),
 
     TimeTable(
@@ -181,6 +194,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=MOVE_TIME,
         order_id=10,
+        is_load=False,
     ),
     TimeTable(
         vehicle_id=10,
@@ -192,6 +206,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=WAIT_TIME,
         order_id=10,
+        is_load=False,
     ),
     TimeTable(
         vehicle_id=10,
@@ -203,6 +218,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=LOAD_TIME,
         order_id=10,
+        is_load=False,
     ),
     TimeTable(
         vehicle_id=10,
@@ -214,6 +230,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=MOVE_TIME,
         order_id=10,
+        is_load=True,
     ),
     TimeTable(
         vehicle_id=10,
@@ -225,6 +242,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=WAIT_TIME,
         order_id=10,
+        is_load=True,
     ),
     TimeTable(
         vehicle_id=10,
@@ -236,6 +254,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=UNLOAD_TIME,
         order_id=10,
+        is_load=True,
     ),
 
     TimeTable(
@@ -248,6 +267,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=MOVE_TIME,
         order_id=11,
+        is_load=False,
     ),
     TimeTable(
         vehicle_id=11,
@@ -259,6 +279,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=WAIT_TIME,
         order_id=11,
+        is_load=False,
     ),
     TimeTable(
         vehicle_id=11,
@@ -270,6 +291,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=LOAD_TIME,
         order_id=11,
+        is_load=False,
     ),
     TimeTable(
         vehicle_id=11,
@@ -281,6 +303,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=5.0,
         order_id=11,
+        is_load=True,
     ),
     TimeTable(
         vehicle_id=11,
@@ -292,6 +315,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=WAIT_TIME,
         order_id=11,
+        is_load=True,
     ),
     TimeTable(
         vehicle_id=11,
@@ -303,6 +327,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=UNLOAD_TIME,
         order_id=11,
+        is_load=True,
     ),
     TimeTable(
         vehicle_id=100,
@@ -314,6 +339,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=10.0,
         order_id=100,
+        is_load=True,
     ),
     TimeTable(
         vehicle_id=100,
@@ -325,6 +351,7 @@ test_time_table = [
         end_area="area2",
         elapsed_time=14.0,
         order_id=100,
+        is_load=False,
     ),
 ]
 
@@ -342,7 +369,7 @@ FIXED_WORK_TIME = 8.0               # 所定労働時間
 
 # NOTE: 各車両の1日のコンプライアンス時間を集計したものを1レコードとする
 @dataclass
-class Record:
+class ComplianceRecord:
     vehicle_id : int = None             # 車両ID
     date: datetime = None               # 集計日
     start_time : datetime = None        # 作業開始時刻
@@ -359,7 +386,7 @@ class Record:
 # NOTE: https://www.mhlw.go.jp/content/001035021.pdf
 @dataclass
 class CompliancePlan:
-    _record: List[Record] = None         # レコード
+    _record: List[ComplianceRecord] = None         # レコード
     time_table: List[TimeTable] = None  # タイムテーブル
     
     def __init__(self, time_table: List[TimeTable]):
@@ -497,7 +524,7 @@ class CompliancePlan:
             return current_bind_time - work_time
         return 0.0
 
-    def _add_record(self, group_time_tables:Dict[Tuple, List[TimeTable]]) -> List[Record]:
+    def _add_record(self, group_time_tables:Dict[Tuple, List[TimeTable]]) -> List[ComplianceRecord]:
         """コンプライアンス時間を集計したレコードを取得
 
         Args:
@@ -556,7 +583,7 @@ class CompliancePlan:
                 
             # レコード生成・登録
             self._record.append(
-                Record(
+                ComplianceRecord(
                     vehicle_id=vehicle_id,
                     date=totaling_date,
                     start_time=current_start_time,
@@ -600,12 +627,105 @@ class CompliancePlan:
         compliance_df.to_html("compliance.html", index=True)
     
     def exe(self):
-        """実行処理
+        """実行
         """
         group_time_tables = self._group_time_table()
         self._add_record(group_time_tables=group_time_tables)
         self.to_dataframe()
     
-
 compliance_plan = CompliancePlan(time_table=test_time_table)
 compliance_plan.exe()
+
+
+# ################################################################
+# 実車率クラス
+# ################################################################
+VEHICLE_SPEED = 26
+
+@dataclass
+class ActualVehicleRateRecord:
+    vehicle_id : int = None      # 車両ID
+    load_dist : float = None     # 実車距離
+    unload_dist : float = None   # 空車距離
+
+
+@dataclass
+class ActualVehicleRate:
+    record: List[ActualVehicleRateRecord] = None  # レコード
+    timetable : List[TimeTable] = None            # タイムテーブル
+    
+    def __init__(self, timetable: List[TimeTable]):
+        """コンストラクタ
+
+        Args:
+            timetable (List[TimeTable]): 生成したタイムテーブル
+        """
+        self.record = []
+        self.timetable = timetable
+
+    def _group_time_table(self) -> Dict[int, List[TimeTable]]:
+        """タイムテーブルをグルーピングする。
+
+        Returns:
+            Dict[Tuple, List[TimeTable]]: グルーピングしたタイムテーブル
+        """
+        # NOTE: 車両IDごとに集計する
+        group_time_tables = defaultdict(list)
+        for tt in self.timetable:
+            group_time_tables[tt.vehicle_id].append(tt)
+        return group_time_tables
+    
+    def _convert_move_dist(self, elapsed_time: float) -> float:
+        """所要時間から距離に戻す
+
+        Args:
+            elapsed_time (float): 所要時間
+
+        Returns:
+            float: 移動距離
+        """
+        return elapsed_time*VEHICLE_SPEED
+    
+    def _add_record(self, group_time_tables: List[TimeTable]):
+        """レコード生成・登録
+
+        Args:
+            group_time_tables (List[TimeTable]): グルーピングしたタイムテーブル
+        """
+        for vehicle_id in group_time_tables.keys():
+            
+            # 車両ごとに計算
+            gtt = group_time_tables[vehicle_id]
+            load_dist = 0.0
+            unload_dist = 0.0
+            
+            # 移動中かつ荷物を積載中かどうか判定
+            for tt in gtt:
+                if tt.category == '移動' and tt.is_load:
+                    load_dist += self._convert_move_dist(tt.elapsed_time)
+                if tt.category == '移動' and tt.is_load is False:
+                    unload_dist += self._convert_move_dist(tt.elapsed_time)
+            # レコードを生成・登録
+            self.record.append(ActualVehicleRateRecord(
+                vehicle_id=vehicle_id,
+                load_dist=load_dist,
+                unload_dist=unload_dist
+            ))
+    
+    def calc_rate(self):
+        """実車率を計算
+        """
+        for r in self.record:
+            rate = (r.load_dist / (r.load_dist + r.unload_dist))*100 
+            rate = round(rate, 2) # unit[%]
+            print(f"Vehicle_id: {r.vehicle_id},  Rate: {rate} [%]")
+    
+    def exe(self):
+        """実行
+        """
+        group_time_table = self._group_time_table()
+        self._add_record(group_time_tables=group_time_table)
+        self.calc_rate()
+
+acutual_vehicle_rate = ActualVehicleRate(timetable=test_time_table)
+acutual_vehicle_rate.exe()
