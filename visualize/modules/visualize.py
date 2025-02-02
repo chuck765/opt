@@ -487,7 +487,9 @@ class CompliancePlan:
         """
         next_key = (vehicle_id, totaling_date+timedelta(days=1)) # 翌日のキー
         if self._is_next_time(group_time_tables=group_time_tables, next_key=next_key):
-            return current_start_time.hour - next_start_time.hour
+            # NOTE: 例として当日8時開始、翌日8時より前ならその差分を当日の拘束時間に含める。
+            if current_start_time.hour > next_start_time.hour:
+                return current_start_time.hour - next_start_time.hour
         return 0.0
     
     def _calc_rest_time(self, group_time_tables:Dict[Tuple, List[TimeTable]], 
@@ -547,7 +549,7 @@ class CompliancePlan:
             current_rest_time = self._calc_rest_time(group_time_tables,vehicle_id,totaling_date,
                                                  current_end_time, next_start_time)
 
-            # 初期化
+            # コンプライアンス時間を集計
             current_bind_time = 0.0
             current_drive_time = 0.0
             current_break_time = 0.0
