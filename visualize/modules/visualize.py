@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
+from dataclass import Area, Vehicle
 
 
 # ################################################################
@@ -9,21 +10,44 @@ from typing import List, Dict, Tuple
 
 @dataclass
 class TimeTable:
-    vehicle_id: int = None         # 車両ID
-    chassis_id: int = None         # chassisID
-    category : str = None          # 作業状況
-    start_time : datetime = None   # 開始時刻
-    end_time : datetime = None     # 終了時刻
-    start_area: str = None         # 開始位置
-    end_area : str = None          # 終了位置
-    elapsed_time : float = 0.0     # 所要時間
-    order_id: int = None           # 割り当てたオーダーID
-    is_load: bool = None           # 荷物を積載中かどうか
+    vehicle: Optional[Vehicle] = None       # 車両ID
+    chassis_id: int = None                  # chassisID
+    category : str = None                   # 作業状況
+    start_time : datetime = None            # 開始時刻
+    end_time : datetime = None              # 終了時刻
+    start_area: Optional[Area] = None       # 開始位置
+    end_area : Optional[Area] = None        # 終了位置
+    elapsed_time : float = 0.0              # 所要時間
+    order_id: int = None                    # 割り当てたオーダーID
+    is_load: bool = None                    # 荷物を積載中かどうか
 
 
 # ################################################################
 # テスト関数
 # ################################################################
+
+area = [Area(name='Area1'), 
+        Area(name='Area2'),
+        Area(name='Area3'),
+        Area(name='Area4'),
+        ]
+
+vehicle = [
+    Vehicle(id=0,
+            name='車番1',
+            type=0),
+    Vehicle(id=1,
+            name='車番2',
+            type=1),
+    Vehicle(id=2,
+            name='車番3',
+            type=0),
+    Vehicle(id=3,
+            name='車番4',
+            type=1),
+]
+
+
 category = {
     "move": "移動",
     "load_wait": "積待機",
@@ -39,153 +63,153 @@ UNLOAD_TIME = 1
 
 test_time_table = [
     TimeTable(
-        vehicle_id=0,
+        vehicle=vehicle[0],
         chassis_id=1,
         category=category["move"],
         start_time=datetime(2025, 2, 1, 8, 30),
         end_time=datetime(2025, 2, 1, 8, 30)+timedelta(hours=MOVE_TIME),
-        start_area="area1",
-        end_area="area2",
+        start_area=area[0].name,
+        end_area=area[1].name,
         elapsed_time=MOVE_TIME,
         order_id=0,
         is_load=False,
     ),
     TimeTable(
-        vehicle_id=0,
+        vehicle=vehicle[0],
         chassis_id=1,
         category=category["load_wait"],
         start_time=datetime(2025, 2, 1, 10, 30),
         end_time=datetime(2025, 2, 1, 10, 30)+timedelta(hours=WAIT_TIME),
-        start_area="area1",
-        end_area="area2",
+        start_area=area[1].name,
+        end_area=area[1].name,
         elapsed_time=WAIT_TIME,
         order_id=0,
         is_load=False,
     ),
     TimeTable(
-        vehicle_id=0,
+        vehicle=vehicle[0],
         chassis_id=1,
         category=category["load"],
         start_time=datetime(2025, 2, 1, 11, 30),
         end_time=datetime(2025, 2, 1, 11, 30)+timedelta(hours=LOAD_TIME),
-        start_area="area1",
-        end_area="area2",
+        start_area=area[1].name,
+        end_area=area[1].name,
         elapsed_time=LOAD_TIME,
         order_id=0,
         is_load=False,
     ),
     TimeTable(
-        vehicle_id=0,
+        vehicle=vehicle[0],
         chassis_id=1,
         category=category["move"],
         start_time=datetime(2025, 2, 1, 12, 30),
         end_time=datetime(2025, 2, 1, 12, 30)+timedelta(hours=MOVE_TIME),
-        start_area="area1",
-        end_area="area2",
+        start_area=area[1].name,
+        end_area=area[2].name,
         elapsed_time=MOVE_TIME,
         order_id=0,
         is_load=True,
     ),
     TimeTable(
-        vehicle_id=0,
+        vehicle=vehicle[0],
         chassis_id=1,
         category=category["unload_wait"],
         start_time=datetime(2025, 2, 1, 13, 30),
         end_time=datetime(2025, 2, 1, 13, 30)+timedelta(hours=WAIT_TIME),
-        start_area="area1",
-        end_area="area2",
+        start_area=area[2].name,
+        end_area=area[2].name,
         elapsed_time=WAIT_TIME,
         order_id=0,
         is_load=True,
     ),
     TimeTable(
-        vehicle_id=0,
+        vehicle=vehicle[0],
         chassis_id=1,
         category=category["unload"],
         start_time=datetime(2025, 2, 1, 14, 30),
         end_time=datetime(2025, 2, 1, 14, 30)+timedelta(hours=UNLOAD_TIME),
-        start_area="area1",
-        end_area="area2",
+        start_area=area[2].name,
+        end_area=area[2].name,
         elapsed_time=UNLOAD_TIME,
         order_id=0,
         is_load=True,
     ),
 
     TimeTable(
-        vehicle_id=0,
+        vehicle=vehicle[0],
         chassis_id=2,
         category=category["move"],
         start_time=datetime(2025, 2, 2, 8, 30),
         end_time=datetime(2025, 2, 2, 8, 30)+timedelta(hours=MOVE_TIME),
-        start_area="area1",
-        end_area="area2",
+        start_area=area[2].name,
+        end_area=area[3].name,
         elapsed_time=MOVE_TIME,
         order_id=1,
         is_load=False,
     ),
     TimeTable(
-        vehicle_id=0,
+        vehicle=vehicle[0],
         chassis_id=2,
         category=category["load_wait"],
         start_time=datetime(2025, 2, 2, 10, 30),
         end_time=datetime(2025, 2, 2, 10, 30)+timedelta(hours=WAIT_TIME),
-        start_area="area1",
-        end_area="area2",
+        start_area=area[3].name,
+        end_area=area[3].name,
         elapsed_time=WAIT_TIME,
         order_id=1,
         is_load=False,
     ),
     TimeTable(
-        vehicle_id=0,
+        vehicle=vehicle[0],
         chassis_id=2,
         category=category["load"],
         start_time=datetime(2025, 2, 2, 11, 30),
         end_time=datetime(2025, 2, 2, 11, 30)+timedelta(hours=LOAD_TIME),
-        start_area="area1",
-        end_area="area2",
+        start_area=area[3].name,
+        end_area=area[3].name,
         elapsed_time=LOAD_TIME,
         order_id=1,
         is_load=False,
     ),
     TimeTable(
-        vehicle_id=0,
+        vehicle=vehicle[0],
         chassis_id=2,
         category=category["move"],
         start_time=datetime(2025, 2, 2, 12, 30),
         end_time=datetime(2025, 2, 2, 12, 30)+timedelta(hours=MOVE_TIME),
-        start_area="area1",
-        end_area="area2",
+        start_area=area[3].name,
+        end_area=area[0].name,
         elapsed_time=MOVE_TIME,
         order_id=1,
         is_load=True,
     ),
     TimeTable(
-        vehicle_id=0,
+        vehicle=vehicle[0],
         chassis_id=2,
         category=category["unload_wait"],
         start_time=datetime(2025, 2, 2, 13, 30),
         end_time=datetime(2025, 2, 2, 13, 30)+timedelta(hours=WAIT_TIME),
-        start_area="area1",
-        end_area="area2",
+        start_area=area[0].name,
+        end_area=area[0].name,
         elapsed_time=WAIT_TIME,
         order_id=1,
         is_load=True,
     ),
     TimeTable(
-        vehicle_id=0,
+        vehicle=vehicle[0],
         chassis_id=2,
         category=category["unload"],
         start_time=datetime(2025, 2, 2, 14, 30),
         end_time=datetime(2025, 2, 2, 14, 30)+timedelta(hours=UNLOAD_TIME),
-        start_area="area1",
-        end_area="area2",
+        start_area=area[0].name,
+        end_area=area[0].name,
         elapsed_time=UNLOAD_TIME,
         order_id=1,
         is_load=True,
     ),
 
     TimeTable(
-        vehicle_id=10,
+        vehicle=vehicle[1],
         chassis_id=11,
         category=category["move"],
         start_time=datetime(2025, 2, 1, 8, 30),
@@ -197,7 +221,7 @@ test_time_table = [
         is_load=False,
     ),
     TimeTable(
-        vehicle_id=10,
+        vehicle=vehicle[1],
         chassis_id=11,
         category=category["load_wait"],
         start_time=datetime(2025, 2, 1, 10, 30),
@@ -209,7 +233,7 @@ test_time_table = [
         is_load=False,
     ),
     TimeTable(
-        vehicle_id=10,
+        vehicle=vehicle[1],
         chassis_id=11,
         category=category["load"],
         start_time=datetime(2025, 2, 1, 11, 30),
@@ -221,7 +245,7 @@ test_time_table = [
         is_load=False,
     ),
     TimeTable(
-        vehicle_id=10,
+        vehicle=vehicle[1],
         chassis_id=11,
         category=category["move"],
         start_time=datetime(2025, 2, 1, 12, 30),
@@ -233,7 +257,7 @@ test_time_table = [
         is_load=True,
     ),
     TimeTable(
-        vehicle_id=10,
+        vehicle=vehicle[1],
         chassis_id=11,
         category=category["unload_wait"],
         start_time=datetime(2025, 2, 1, 13, 30),
@@ -245,7 +269,7 @@ test_time_table = [
         is_load=True,
     ),
     TimeTable(
-        vehicle_id=10,
+        vehicle=vehicle[1],
         chassis_id=11,
         category=category["unload"],
         start_time=datetime(2025, 2, 1, 14, 30),
@@ -258,7 +282,7 @@ test_time_table = [
     ),
 
     TimeTable(
-        vehicle_id=11,
+        vehicle=vehicle[1],
         chassis_id=12,
         category=category["move"],
         start_time=datetime(2025, 2, 2, 8, 30),
@@ -270,7 +294,7 @@ test_time_table = [
         is_load=False,
     ),
     TimeTable(
-        vehicle_id=11,
+        vehicle=vehicle[2],
         chassis_id=12,
         category=category["load_wait"],
         start_time=datetime(2025, 2, 2, 10, 30),
@@ -282,7 +306,7 @@ test_time_table = [
         is_load=False,
     ),
     TimeTable(
-        vehicle_id=11,
+        vehicle=vehicle[2],
         chassis_id=12,
         category=category["load"],
         start_time=datetime(2025, 2, 2, 11, 30),
@@ -294,7 +318,7 @@ test_time_table = [
         is_load=False,
     ),
     TimeTable(
-        vehicle_id=11,
+        vehicle=vehicle[2],
         chassis_id=12,
         category=category["move"],
         start_time=datetime(2025, 2, 2, 12, 30),
@@ -306,7 +330,7 @@ test_time_table = [
         is_load=True,
     ),
     TimeTable(
-        vehicle_id=11,
+        vehicle=vehicle[2],
         chassis_id=12,
         category=category["unload_wait"],
         start_time=datetime(2025, 2, 2, 17, 30),
@@ -318,7 +342,7 @@ test_time_table = [
         is_load=True,
     ),
     TimeTable(
-        vehicle_id=11,
+        vehicle=vehicle[2],
         chassis_id=12,
         category=category["unload"],
         start_time=datetime(2025, 2, 2, 18, 30),
@@ -330,7 +354,7 @@ test_time_table = [
         is_load=True,
     ),
     TimeTable(
-        vehicle_id=100,
+        vehicle=vehicle[3],
         chassis_id=101,
         category=category["move"],
         start_time=datetime(2025, 2, 1, 8, 30),
@@ -342,7 +366,7 @@ test_time_table = [
         is_load=True,
     ),
     TimeTable(
-        vehicle_id=100,
+        vehicle=vehicle[3],
         chassis_id=101,
         category=category["move"],
         start_time=datetime(2025, 2, 2, 6, 30),
@@ -407,7 +431,7 @@ class CompliancePlan:
         # NOTE: 日別で集計するため、同じ車両ID and 同じ開始日で分ける
         group_time_tables = defaultdict(list)
         for tt in self.time_table:
-            key = (tt.vehicle_id, tt.start_time.date())
+            key = (tt.vehicle.id, tt.start_time.date())
             group_time_tables[key].append(tt)
         return group_time_tables
     
@@ -537,7 +561,7 @@ class CompliancePlan:
         """
         
         for vehicle_id, totaling_date in group_time_tables.keys():
-                        
+                      
             # 当日の作業開始・終了時刻
             current_start_time = self._calc_current_start_time(group_time_tables,vehicle_id,totaling_date)
             current_end_time = self._calc_current_end_time(group_time_tables,vehicle_id,totaling_date)
@@ -646,9 +670,10 @@ VEHICLE_SPEED = 26
 
 @dataclass
 class ActualVehicleRateRecord:
-    vehicle_id : int = None      # 車両ID
-    load_dist : float = None     # 実車距離
-    unload_dist : float = None   # 空車距離
+    vehicle_id : int = None                       # 車両ID
+    vehicle_type : int = None                     # 車両タイプ
+    load_dist : float = None                      # 実車距離
+    unload_dist : float = None                    # 空車距離
 
 
 @dataclass
@@ -674,7 +699,7 @@ class ActualVehicleRate:
         # NOTE: 車両IDごとに集計する
         group_time_tables = defaultdict(list)
         for tt in self.timetable:
-            group_time_tables[tt.vehicle_id].append(tt)
+            group_time_tables[tt.vehicle.id].append(tt)
         return group_time_tables
     
     def _convert_move_dist(self, elapsed_time: float) -> float:
@@ -695,21 +720,20 @@ class ActualVehicleRate:
             group_time_tables (List[TimeTable]): グルーピングしたタイムテーブル
         """
         for vehicle_id in group_time_tables.keys():
-            
-            # 車両ごとに計算
-            gtt = group_time_tables[vehicle_id]
             load_dist = 0.0
             unload_dist = 0.0
-            
-            # 移動中かつ荷物を積載中かどうか判定
-            for tt in gtt:
-                if tt.category == '移動' and tt.is_load:
+            vehicle_type = None
+            for tt in group_time_tables[vehicle_id]:
+                vehicle_type = tt.vehicle.type
+                if tt.category == '移動' and tt.is_load: # 実車
                     load_dist += self._convert_move_dist(tt.elapsed_time)
-                if tt.category == '移動' and tt.is_load is False:
+                if tt.category == '移動' and tt.is_load is False: # 空車
                     unload_dist += self._convert_move_dist(tt.elapsed_time)
+            
             # レコードを生成・登録
             self.record.append(ActualVehicleRateRecord(
                 vehicle_id=vehicle_id,
+                vehicle_type=vehicle_type,
                 load_dist=load_dist,
                 unload_dist=unload_dist
             ))
