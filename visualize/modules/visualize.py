@@ -744,7 +744,7 @@ class ActualVehicleRate:
         for r in self.record:
             rate = (r.load_dist / (r.load_dist + r.unload_dist))*100 
             rate = round(rate, 2) # unit[%]
-            print(f"Vehicle_id: {r.vehicle_id},  Rate: {rate} [%]")
+            print(f"Vehicle_id: {r.vehicle_id},  Vehicle_type: {r.vehicle_type}, Rate: {rate} [%]")
     
     def exe(self):
         """実行
