@@ -7,8 +7,6 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
-import sphinx_rtd_theme
-import sphinx_fontawesome
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -22,9 +20,6 @@ release = '1.0.1'
 extensions = [
     'sphinx.ext.autodoc', 
     'sphinx.ext.napoleon', 
-    'sphinx_rtd_theme', 
-    'sphinx_fontawesome', 
-    'myst_parser', 
 ]
 source_suffix = {
     '.rst': 'restructuredtext',
@@ -34,8 +29,5 @@ templates_path = ['_templates']
 language = 'en'
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-# -- Options for HTML output -------------------------------------------------
-html_theme = "sphinx_rtd_theme"
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-html_show_sourcelink = False
-html_static_path = ['_static']
+autodoc_default_options = {'private-members': True,
+                           'show-inheritance': True}
