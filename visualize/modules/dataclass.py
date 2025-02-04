@@ -5,6 +5,10 @@ from enum import Enum
 # 車両クラス
 # ################################################################
 @dataclass
+class VehicleSpec(Enum):
+    VEHICLE_SPEED = 26
+
+@dataclass
 class VehicleType(Enum):
     TANK = 0
     HEAD = 1

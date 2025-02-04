@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import List, Dict, Tuple, Optional
-from dataclass import Area, Vehicle, AreaType
+from dataclass import Area, Vehicle, AreaType, VehicleSpec
 
 
 # ################################################################
@@ -646,7 +646,6 @@ compliance_plan.exe()
 # ################################################################
 # 実車率クラス
 # ################################################################
-VEHICLE_SPEED = 26
 
 @dataclass
 class ActualVehicleRateRecord:
@@ -691,7 +690,7 @@ class ActualVehicleRate:
         Returns:
             float: 移動距離
         """
-        return elapsed_time*VEHICLE_SPEED
+        return elapsed_time*VehicleSpec.VEHICLE_SPEED.value
     
     def _add_record(self, group_time_tables: List[TimeTable]):
         """レコード生成・登録
