@@ -20,5 +20,12 @@ class Vehicle:
 # 場所クラス
 # ################################################################
 @dataclass
+class AreaType(Enum):
+    LOAD = 0
+    UNLOAD = 1
+    OFFICE = 2
+
+@dataclass
 class Area:
     name : str = None              # 地点名
+    type : AreaType = None         # 地点タイプ
