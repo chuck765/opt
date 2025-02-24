@@ -79,6 +79,8 @@ class Visualize:
         
         # ペア生成
         city_pair = list(zip(citys, citys[1:]))
+        city_pair.append((citys[-1], citys[0])) # 末尾と先頭の距離も見る
+        
         obj_value = 0
         for from_city, to_city in city_pair:
             dist = self.dist_matrix[(from_city, to_city)]
