@@ -58,6 +58,7 @@ class Visualize:
         """
         sorted_record = sorted(self.records, key=lambda x: x.order)
         sorted_city = [record.city for record in sorted_record]
+        #sorted_city.append(sorted_record[0])
         return sorted_city
     
     def get_correct_answer(self):
@@ -78,8 +79,6 @@ class Visualize:
         
         # ペア生成
         city_pair = list(zip(citys, citys[1:]))
-        city_pair.append((citys[-1], citys[0])) # 末尾と先頭のペア
-        
         obj_value = 0
         for from_city, to_city in city_pair:
             dist = self.dist_matrix[(from_city, to_city)]
@@ -87,14 +86,18 @@ class Visualize:
             obj_value+=dist
         print(f"obj value = {obj_value}")
 
-    def plot_route(self):
+    def plot_route(self, correct_ans_flg=False):
         """可視化処理
         """
         
         plt.figure(figsize=(10, 8))
         
+        if correct_ans_flg:
+            orders = self.get_correct_answer() 
+        else:
+            orders = self.get_sorted_order()
+        
         # 地点のプロット
-        orders = self.get_sorted_order()
         for i in range(len(orders)):
             x = self.nodes[orders[i]].x_coord
             y = self.nodes[orders[i]].y_coord
