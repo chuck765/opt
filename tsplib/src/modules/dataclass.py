@@ -48,3 +48,7 @@ class TSP:
             
         self.problem = problem
         self.node = node
+    
+    def describe(self):
+        print(f"problem: {self.problem}")
+        print(f"node: {self.node}")

@@ -60,13 +60,18 @@ class ModelRoute():
         """
         dimension = self.problem.dimension
         dist_matrix = self.dist_matrix
+        
         obj_dist = 0
         for i in range(dimension):
             for j in range(dimension):
                 if i == j:
                     continue
                 obj_dist += dist_matrix[(i, j)]*x[i][j]*x[int((i+1)%dimension)][j]
-        return obj_dist
+                
+        # 正規化
+        n_normalize = max(dist_matrix.values())
+        obj = obj_dist / n_normalize
+        return obj
 
     def get_constraints(self, x):
         """制約条件を取得

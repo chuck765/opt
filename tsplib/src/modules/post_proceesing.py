@@ -5,29 +5,36 @@ from typing import List
 from modules.dataclass import Node
 
 @dataclass
-class Record:
-    order: int  = None
+class OptimizeRouteRecord:
     city: int   = None
+    order: int  = None
 
 
 @dataclass
 class OptimizeRoute:
     route: List[List[int]] = None
-    record : List[Record]  = None
+    record : List[OptimizeRouteRecord]  = None
     
     def __init__(self, route):
+        """コンストラクタ
+
+        Args:
+            route (List[List[int]]): 最適化で採用したルート情報
+        """
         self.route = route
     
     def add_record(self):
+        """レコード生成・登録
+        """
         records = []
         dimension = len(self.route)
-        for j in range(dimension):
-            for i in range(dimension):
+        for i in range(dimension):
+            for j in range(dimension):
                 if self.route[i][j] == 1:
                     records.append(
-                        Record(
-                            order=j,
+                        OptimizeRouteRecord(
                             city=i,
+                            order=j,
                         )
                     )
         self.record = records
@@ -38,72 +45,74 @@ class Visualize:
     """可視化クラス
     """
     nodes: List[Node]      = None
-    records : List[Record]  = None
+    records : List[OptimizeRouteRecord]  = None
     dist_matrix : dict     = None
     
-    def __init__(self, nodes: List[Node], record: List[Record], dist_matrix: dict):
+    def __init__(self, nodes: List[Node], record: List[OptimizeRouteRecord], dist_matrix: dict):
         self.nodes = nodes
         self.records = record
         self.dist_matrix = dist_matrix
+    
+    def get_sorted_order(self):
+        """レコードをオーダーの昇順に並べ替え
+        """
+        sorted_record = sorted(self.records, key=lambda x: x.order)
+        sorted_city = [record.city for record in sorted_record]
+        return sorted_city
+    
+    def get_correct_answer(self):
+        """正解データ
+        """
+        correct_ans = [1,10,9,11,8,13,7,12,6,5,4,3,14,2] # 正解
+        update_correct_ans = [ans-1 for ans in correct_ans]
+        return update_correct_ans
 
-    def to_objective_result(self):
+    def to_objective_value(self, correct_ans_flg=False):
         """目的関数の値を可視化
         """
+    
+        if correct_ans_flg:
+            citys = self.get_correct_answer() # 正解
+        else:
+            citys = self.get_sorted_order() # 実測値
         
-        # NOTE: 実測値
-        print("============ 実測値 ============")
-        pairs = list(zip(self.records, self.records[1:]))
-        pairs.append((self.records[-1], self.records[0]))
+        # ペア生成
+        city_pair = list(zip(citys, citys[1:]))
+        city_pair.append((citys[-1], citys[0])) # 末尾と先頭のペア
         
         obj_value = 0
-        for from_node, to_node in pairs:
-            dist = self.dist_matrix[(from_node.city, to_node.city)]
-            print(f"{from_node.city} -> {to_node.city}: {dist}" )
+        for from_city, to_city in city_pair:
+            dist = self.dist_matrix[(from_city, to_city)]
+            print(f"{from_city} -> {to_city}: {dist}" )
             obj_value+=dist
         print(f"obj value = {obj_value}")
-        print("")
-        
-        # NOTE: 正解値
-        print("============ 正解値 ============")
-        correct_ans = [1,10,9,11,8,13,7,12,6,5,4,3,14,2]
-        correct_ans = [ans-1 for ans in correct_ans]
-        pairs = list(zip(correct_ans, correct_ans[1:]))
-        pairs.append((correct_ans[-1], correct_ans[0]))
-        
-        correct_ans_obj_value = 0
-        for from_node, to_node in pairs:
-            dist = self.dist_matrix[(from_node, to_node)]
-            print(f"{from_node} -> {to_node}: {dist}" )
-            correct_ans_obj_value+=dist
-        print(f"correct_ans obj value = {correct_ans_obj_value}")
 
-    def plot_route(self, data, id_sequence):
+    def plot_route(self):
         """可視化処理
-
-        Args:
-            data (tsplib_data.TSP): TSPデータ
-            id_sequence (list): アニーリングで採用された地点ID
         """
         
-        coordinate = data.coordinate
         plt.figure(figsize=(10, 8))
         
-        # 散布図に青色の地点、地点IDを表示
-        for key in coordinate:
-            x, y = coordinate[key][0], coordinate[key][1]
+        # 地点のプロット
+        orders = self.get_sorted_order()
+        for i in range(len(orders)):
+            x = self.nodes[orders[i]].x_coord
+            y = self.nodes[orders[i]].y_coord
             plt.scatter(x, y, color='blue')
-            plt.text(x, y, f'{key}', fontsize=9, ha='right')
+            plt.text(x, y, f'{orders[i]}', fontsize=9, ha='right')
         
-        # 開始地点を赤色にする
-        start_x, start_y = coordinate[id_sequence[0]]
+        # 開始地点
+        start_point = orders[0]
+        start_x = self.nodes[start_point].x_coord
+        start_y = self.nodes[start_point].y_coord
         plt.scatter(start_x, start_y, color='red')
         
-        # アニーリング結果をルート順に点線でつなぐ
-        for i in range(len(id_sequence) - 1):
-            current_id = id_sequence[i]
-            next_id = id_sequence[i + 1]
-            current_x, current_y = coordinate[current_id]
-            next_x, next_y = coordinate[next_id]
+        # order順につなげていく
+        for i in range(len(orders) - 1):
+            current_x = self.nodes[orders[i]].x_coord
+            current_y = self.nodes[orders[i]].y_coord
+            next_x = self.nodes[orders[i+1]].x_coord
+            next_y = self.nodes[orders[i+1]].y_coord
             plt.annotate("", xy=(next_x, next_y), xytext=(current_x, current_y),
                          arrowprops=dict(arrowstyle="->", color='black', lw=0.5, linestyle='--'))
         
