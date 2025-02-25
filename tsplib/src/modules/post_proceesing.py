@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from dataclasses import dataclass
 from typing import List
 
-from modules.dataclass import Node
+from modules.dataclass import Node, Problem
 
 @dataclass
 class OptimizeRouteRecord:
@@ -44,11 +44,13 @@ class OptimizeRoute:
 class Visualize:
     """可視化クラス
     """
+    problem : Problem      = None
     nodes: List[Node]      = None
     records : List[OptimizeRouteRecord]  = None
     dist_matrix : dict     = None
     
-    def __init__(self, nodes: List[Node], record: List[OptimizeRouteRecord], dist_matrix: dict):
+    def __init__(self, problem: Problem, nodes: List[Node], record: List[OptimizeRouteRecord], dist_matrix: dict):
+        self.problem = problem
         self.nodes = nodes
         self.records = record
         self.dist_matrix = dist_matrix
@@ -59,20 +61,13 @@ class Visualize:
         sorted_record = sorted(self.records, key=lambda x: x.order)
         sorted_city = [record.city for record in sorted_record]
         return sorted_city
-    
-    def get_correct_answer(self):
-        """正解データ
-        """
-        correct_ans = [1,10,9,11,8,13,7,12,6,5,4,3,14,2] # 正解
-        update_correct_ans = [ans-1 for ans in correct_ans]
-        return update_correct_ans
 
     def to_objective_value(self, correct_ans_flg=False):
         """目的関数の値を可視化
         """
     
         if correct_ans_flg:
-            citys = self.get_correct_answer() # 正解
+            citys = self.problem.correct_answer # 正解
         else:
             citys = self.get_sorted_order() # 実測値
         
@@ -93,7 +88,7 @@ class Visualize:
 
         # 正解か実測値
         if correct_ans_flg:
-            orders = self.get_correct_answer() 
+            orders = self.problem.correct_answer
         else:
             orders = self.get_sorted_order()
         
