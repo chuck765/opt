@@ -38,6 +38,9 @@ class OptimizeRoute:
                         )
                     )
         self.record = records
+    
+    def describe(self):
+        print(f"record: {self.record}")
         
 
 @dataclass
