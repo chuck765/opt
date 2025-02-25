@@ -58,7 +58,6 @@ class Visualize:
         """
         sorted_record = sorted(self.records, key=lambda x: x.order)
         sorted_city = [record.city for record in sorted_record]
-        #sorted_city.append(sorted_record[0])
         return sorted_city
     
     def get_correct_answer(self):
@@ -91,15 +90,15 @@ class Visualize:
     def plot_route(self, correct_ans_flg=False):
         """可視化処理
         """
-        
-        plt.figure(figsize=(10, 8))
-        
+
+        # 正解か実測値
         if correct_ans_flg:
             orders = self.get_correct_answer() 
         else:
             orders = self.get_sorted_order()
         
         # 地点のプロット
+        plt.figure(figsize=(10, 8))
         for i in range(len(orders)):
             x = self.nodes[orders[i]].x_coord
             y = self.nodes[orders[i]].y_coord
@@ -113,12 +112,14 @@ class Visualize:
         plt.scatter(start_x, start_y, color='red')
         
         # order順につなげていく
-        for i in range(len(orders) - 1):
-            current_x = self.nodes[orders[i]].x_coord
-            current_y = self.nodes[orders[i]].y_coord
-            next_x = self.nodes[orders[i+1]].x_coord
-            next_y = self.nodes[orders[i+1]].y_coord
-            plt.annotate("", xy=(next_x, next_y), xytext=(current_x, current_y),
+        order_pair = list(zip(orders, orders[1:]))
+        order_pair.append((orders[-1], orders[0]))
+        for order1, order2 in order_pair:
+            x1 = self.nodes[order1].x_coord
+            y1 = self.nodes[order1].y_coord
+            x2 = self.nodes[order2].x_coord
+            y2 = self.nodes[order2].y_coord
+            plt.annotate("", xy=(x2, y2), xytext=(x1, y1),
                          arrowprops=dict(arrowstyle="->", color='black', lw=0.5, linestyle='--'))
         
         plt.title("TSPLIB Visualize Result")
